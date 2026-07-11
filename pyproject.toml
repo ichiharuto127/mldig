@@ -1,0 +1,33 @@
+[project]
+name = "mldig"
+version = "0.1.0"
+description = "arXiv新着をキーワードで絞り込み、LLMで日本語要約してMarkdownダイジェストを生成するCLI"
+readme = "README.md"
+authors = [
+    { name = "ichiharuto127", email = "ichi.haruto127@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+mldig = "mldig:main"
+
+[build-system]
+requires = ["uv_build>=0.11.28,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+    "pytest>=9.1.1",
+    "ruff>=0.15.21",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

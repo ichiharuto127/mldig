@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: 依存をインストール
+        run: uv sync --locked
+      - name: Lint
+        run: uv run ruff check .
+      - name: フォーマット検査
+        run: uv run ruff format --check .
+      - name: テスト
+        run: uv run pytest
