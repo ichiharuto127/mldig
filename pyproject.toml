@@ -7,10 +7,12 @@ authors = [
     { name = "ichiharuto127", email = "ichi.haruto127@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "arxiv>=4.0.0",
+]
 
 [project.scripts]
-mldig = "mldig:main"
+mldig = "mldig.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.11.28,<0.12.0"]
