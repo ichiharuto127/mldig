@@ -8,7 +8,12 @@ from pathlib import Path
 def load_seen(path: Path) -> dict[str, dict]:
     if not path.exists():
         return {}
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        raise ValueError(
+            f"要約済みキャッシュが壊れています: {path}（修復するか、削除して再実行）"
+        ) from e
 
 
 def mark_seen(seen: dict[str, dict], arxiv_id: str, model: str) -> None:

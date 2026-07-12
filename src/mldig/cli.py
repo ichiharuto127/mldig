@@ -27,7 +27,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
-    args = build_parser().parse_args()
+    parser = build_parser()
+    args = parser.parse_args()
+    if args.limit is not None and args.limit <= 0:
+        parser.error("--limit は正の整数で指定してください")
     settings = load_settings(args.config)
     max_papers = args.limit if args.limit is not None else settings.max_papers
 
