@@ -59,6 +59,8 @@ def main() -> None:
             print(f"※ 上限超過 {len(overflow)} 件はタイトルのみ掲載になる")
         return
 
+    # 実行日はここで1回だけ確定し、seen.json とダイジェストの日付ズレを防ぐ
+    run_day = date.today()
     summarized = []
     failed = []
     model_name = "-"
@@ -76,13 +78,14 @@ def main() -> None:
                 continue
             summarized.append((paper, matched, summary))
             # 1件ごとに保存し、途中で落ちても要約済み分の再課金を防ぐ
-            mark_seen(seen, paper.arxiv_id, summarizer.model)
+            mark_seen(seen, paper.arxiv_id, summarizer.model, run_day)
             save_seen(seen, SEEN_PATH)
             log_usage(USAGE_PATH, summarizer.model, paper.arxiv_id, usage)
 
-    today = date.today()
-    digest = render_digest(today, model_name, len(papers), len(hits), summarized, overflow, failed)
-    out_path = DIGEST_DIR / f"{today.isoformat()}.md"
+    digest = render_digest(
+        run_day, model_name, len(papers), len(hits), summarized, overflow, failed
+    )
+    out_path = DIGEST_DIR / f"{run_day.isoformat()}.md"
     out_path.parent.mkdir(exist_ok=True)
     out_path.write_text(digest, encoding="utf-8")
     print(f"ダイジェストを出力: {out_path}（要約 {len(summarized)} 件 / 失敗 {len(failed)} 件）")
