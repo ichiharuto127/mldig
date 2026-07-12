@@ -16,8 +16,8 @@ def load_seen(path: Path) -> dict[str, dict]:
         ) from e
 
 
-def mark_seen(seen: dict[str, dict], arxiv_id: str, model: str) -> None:
-    seen[arxiv_id] = {"summarized_on": date.today().isoformat(), "model": model}
+def mark_seen(seen: dict[str, dict], arxiv_id: str, model: str, day: date) -> None:
+    seen[arxiv_id] = {"summarized_on": day.isoformat(), "model": model}
 
 
 def save_seen(seen: dict[str, dict], path: Path) -> None:

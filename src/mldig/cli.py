@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 import argparse
+from datetime import date
 from pathlib import Path
 
 from mldig.arxiv_client import fetch_recent_papers
-from mldig.cache import load_seen
+from mldig.cache import load_seen, mark_seen, save_seen
 from mldig.config import load_settings
+from mldig.digest import render_digest
 from mldig.filtering import filter_papers
+from mldig.summarizer import Summarizer, log_usage
 
 SEEN_PATH = Path("data/seen.json")
+USAGE_PATH = Path("data/usage.jsonl")
+DIGEST_DIR = Path("digests")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -54,4 +59,33 @@ def main() -> None:
             print(f"※ 上限超過 {len(overflow)} 件はタイトルのみ掲載になる")
         return
 
-    raise NotImplementedError("要約とダイジェスト生成は PR3 で実装予定（現状は --dry-run を使用）")
+    # 実行日はここで1回だけ確定し、seen.json とダイジェストの日付ズレを防ぐ
+    run_day = date.today()
+    summarized = []
+    failed = []
+    model_name = "-"
+    if to_summarize:
+        # 要約対象がない日は Summarizer を生成しない（APIキー未設定でも0件ダイジェストは出せる）
+        summarizer = Summarizer()
+        model_name = summarizer.model
+        for i, (paper, matched) in enumerate(to_summarize, 1):
+            print(f"[{i}/{len(to_summarize)}] {paper.arxiv_id} を要約中...")
+            try:
+                summary, usage = summarizer.summarize(paper)
+            except Exception as e:
+                print(f"  要約失敗: {e}")
+                failed.append(paper)
+                continue
+            summarized.append((paper, matched, summary))
+            # 1件ごとに保存し、途中で落ちても要約済み分の再課金を防ぐ
+            mark_seen(seen, paper.arxiv_id, summarizer.model, run_day)
+            save_seen(seen, SEEN_PATH)
+            log_usage(USAGE_PATH, summarizer.model, paper.arxiv_id, usage)
+
+    digest = render_digest(
+        run_day, model_name, len(papers), len(hits), summarized, overflow, failed
+    )
+    out_path = DIGEST_DIR / f"{run_day.isoformat()}.md"
+    out_path.parent.mkdir(exist_ok=True)
+    out_path.write_text(digest, encoding="utf-8")
+    print(f"ダイジェストを出力: {out_path}（要約 {len(summarized)} 件 / 失敗 {len(failed)} 件）")
