@@ -1,0 +1,19 @@
+# mldig 設定（APIキー等の秘密情報はここではなく .env に置く）
+
+# 取得対象の arXiv カテゴリ
+categories = ["cs.LG", "cs.CL", "cs.CV"]
+
+# 興味キーワード（title + abstract に部分一致、OR 条件。空リストなら全件通過）
+keywords = [
+    "large language model",
+    "llm",
+    "transformer",
+    "fine-tuning",
+    "reinforcement learning",
+]
+
+# 1回の実行で要約する上限本数（予算試算 20本/日 と一致させる）
+max_papers = 20
+
+# 何日前まで遡って取得するか（土日の announce 停止分を月曜に拾える値にする）
+days_back = 3
