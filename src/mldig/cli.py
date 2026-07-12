@@ -59,27 +59,29 @@ def main() -> None:
             print(f"※ 上限超過 {len(overflow)} 件はタイトルのみ掲載になる")
         return
 
-    summarizer = Summarizer()
     summarized = []
     failed = []
-    for i, (paper, matched) in enumerate(to_summarize, 1):
-        print(f"[{i}/{len(to_summarize)}] {paper.arxiv_id} を要約中...")
-        try:
-            summary, usage = summarizer.summarize(paper)
-        except Exception as e:
-            print(f"  要約失敗: {e}")
-            failed.append(paper)
-            continue
-        summarized.append((paper, matched, summary))
-        # 1件ごとに保存し、途中で落ちても要約済み分の再課金を防ぐ
-        mark_seen(seen, paper.arxiv_id, summarizer.model)
-        save_seen(seen, SEEN_PATH)
-        log_usage(USAGE_PATH, summarizer.model, paper.arxiv_id, usage)
+    model_name = "-"
+    if to_summarize:
+        # 要約対象がない日は Summarizer を生成しない（APIキー未設定でも0件ダイジェストは出せる）
+        summarizer = Summarizer()
+        model_name = summarizer.model
+        for i, (paper, matched) in enumerate(to_summarize, 1):
+            print(f"[{i}/{len(to_summarize)}] {paper.arxiv_id} を要約中...")
+            try:
+                summary, usage = summarizer.summarize(paper)
+            except Exception as e:
+                print(f"  要約失敗: {e}")
+                failed.append(paper)
+                continue
+            summarized.append((paper, matched, summary))
+            # 1件ごとに保存し、途中で落ちても要約済み分の再課金を防ぐ
+            mark_seen(seen, paper.arxiv_id, summarizer.model)
+            save_seen(seen, SEEN_PATH)
+            log_usage(USAGE_PATH, summarizer.model, paper.arxiv_id, usage)
 
     today = date.today()
-    digest = render_digest(
-        today, summarizer.model, len(papers), len(hits), summarized, overflow, failed
-    )
+    digest = render_digest(today, model_name, len(papers), len(hits), summarized, overflow, failed)
     out_path = DIGEST_DIR / f"{today.isoformat()}.md"
     out_path.parent.mkdir(exist_ok=True)
     out_path.write_text(digest, encoding="utf-8")
