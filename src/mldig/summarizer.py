@@ -4,7 +4,7 @@ import json
 import os
 import re
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -48,16 +48,23 @@ def parse_summary(text: str) -> Summary:
     return summary
 
 
+def _usage_value(usage, key: str):
+    # OpenAI互換エンドポイントは usage を dict で返す実装があるため両対応する
+    if isinstance(usage, dict):
+        return usage.get(key)
+    return getattr(usage, key, None)
+
+
 def log_usage(path: Path, model: str, arxiv_id: str, usage) -> None:
     if usage is None:
         return
     path.parent.mkdir(parents=True, exist_ok=True)
     record = {
-        "ts": datetime.now().isoformat(timespec="seconds"),
+        "ts": datetime.now(UTC).isoformat(timespec="seconds"),
         "model": model,
         "arxiv_id": arxiv_id,
-        "prompt_tokens": usage.prompt_tokens,
-        "completion_tokens": usage.completion_tokens,
+        "prompt_tokens": _usage_value(usage, "prompt_tokens"),
+        "completion_tokens": _usage_value(usage, "completion_tokens"),
     }
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -75,7 +82,7 @@ class Summarizer:
 
     def summarize(self, paper: Paper) -> tuple[Summary, object]:
         params: dict = {"max_tokens": MAX_TOKENS}
-        if self.model.startswith("gpt-"):
+        if self.model.startswith("gpt-5"):
             # GPT-5系は推論モデル：effort を切り、max_completion_tokens を使う（¥500地雷対策）
             params = {"max_completion_tokens": MAX_TOKENS, "reasoning_effort": "none"}
         response = self.client.chat.completions.create(
