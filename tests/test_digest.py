@@ -1,8 +1,8 @@
 from datetime import UTC, date, datetime
 
-from mldig.arxiv_client import Paper
-from mldig.digest import render_digest
-from mldig.summarizer import Summary
+from aidig.arxiv_client import Paper
+from aidig.digest import render_digest
+from aidig.summarizer import Summary
 
 
 def make_paper(arxiv_id: str = "2607.00001", title: str = "Test Paper") -> Paper:
@@ -22,7 +22,7 @@ def make_summary() -> Summary:
 
 def test_render_zero_papers():
     md = render_digest(date(2026, 7, 12), "test-model", 100, 0, [], [], [])
-    assert "# mldig ダイジェスト 2026-07-12" in md
+    assert "# aidig ダイジェスト 2026-07-12" in md
     assert "0 件でした" in md
 
 

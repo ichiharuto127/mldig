@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 
-from mldig.arxiv_client import Paper
-from mldig.filtering import filter_papers, match_keywords
+from aidig.arxiv_client import Paper
+from aidig.filtering import filter_papers, match_keywords
 
 
 def make_paper(title: str = "A study", abstract: str = "Nothing special") -> Paper:

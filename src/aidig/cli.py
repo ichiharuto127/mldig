@@ -4,12 +4,12 @@ import argparse
 from datetime import date
 from pathlib import Path
 
-from mldig.arxiv_client import fetch_recent_papers
-from mldig.cache import load_seen, mark_seen, save_seen
-from mldig.config import load_settings
-from mldig.digest import render_digest
-from mldig.filtering import filter_papers
-from mldig.summarizer import Summarizer, log_usage
+from aidig.arxiv_client import fetch_recent_papers
+from aidig.cache import load_seen, mark_seen, save_seen
+from aidig.config import load_settings
+from aidig.digest import render_digest
+from aidig.filtering import filter_papers
+from aidig.summarizer import Summarizer, log_usage
 
 SEEN_PATH = Path("data/seen.json")
 USAGE_PATH = Path("data/usage.jsonl")
@@ -18,7 +18,7 @@ DIGEST_DIR = Path("digests")
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="mldig",
+        prog="aidig",
         description="arXiv新着をキーワードで絞り込み、LLMで日本語要約してMarkdownダイジェストを生成する",
     )
     parser.add_argument(

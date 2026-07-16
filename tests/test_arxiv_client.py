@@ -1,4 +1,4 @@
-from mldig.arxiv_client import strip_version
+from aidig.arxiv_client import strip_version
 
 
 def test_strip_version_new_style():

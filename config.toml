@@ -1,4 +1,4 @@
-# mldig 設定（APIキー等の秘密情報はここではなく .env に置く）
+# aidig 設定（APIキー等の秘密情報はここではなく .env に置く）
 
 # 取得対象の arXiv カテゴリ
 categories = ["cs.LG", "cs.CL", "cs.CV"]

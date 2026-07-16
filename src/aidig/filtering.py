@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from mldig.arxiv_client import Paper
+from aidig.arxiv_client import Paper
 
 
 def match_keywords(paper: Paper, keywords: list[str]) -> list[str]:

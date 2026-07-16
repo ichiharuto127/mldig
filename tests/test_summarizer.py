@@ -1,7 +1,7 @@
 import json
 from types import SimpleNamespace
 
-from mldig.summarizer import log_usage, parse_summary
+from aidig.summarizer import log_usage, parse_summary
 
 
 def test_parse_well_formed_response():

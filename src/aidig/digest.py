@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from datetime import date
 
-from mldig.arxiv_client import Paper
-from mldig.summarizer import Summary
+from aidig.arxiv_client import Paper
+from aidig.summarizer import Summary
 
 
 def render_digest(
@@ -15,7 +15,7 @@ def render_digest(
     overflow: list[tuple[Paper, list[str]]],
     failed: list[Paper],
 ) -> str:
-    lines = [f"# mldig ダイジェスト {day.isoformat()}", ""]
+    lines = [f"# aidig ダイジェスト {day.isoformat()}", ""]
     lines.append(
         f"取得 {fetched} 件 / キーワード一致 {matched} 件 / "
         f"新規要約 {len(summarized)} 件（モデル: {model}）"
