@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from mldig.cache import load_seen, mark_seen, save_seen
+from aidig.cache import load_seen, mark_seen, save_seen
 
 
 def test_load_seen_missing_file_returns_empty(tmp_path):

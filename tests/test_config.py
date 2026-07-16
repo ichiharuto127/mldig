@@ -1,6 +1,6 @@
 import pytest
 
-from mldig.config import load_settings
+from aidig.config import load_settings
 
 
 def write_config(tmp_path, body: str):

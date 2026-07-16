@@ -1,5 +1,5 @@
 [project]
-name = "mldig"
+name = "aidig"
 version = "0.1.0"
 description = "arXiv新着をキーワードで絞り込み、LLMで日本語要約してMarkdownダイジェストを生成するCLI"
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mldig = "mldig.cli:main"
+aidig = "aidig.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.11.28,<0.12.0"]
@@ -32,6 +32,10 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# プロンプト文字列内の日本語長文は行分割できないため E501 を除外
+"src/aidig/summarizer.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
