@@ -120,7 +120,7 @@ PAYG は法人のみ）。英語 abstract → 日本語要約は Gemini Flash/Cl
 - [x] `uv run` 一発で当日のダイジェスト Markdown が生成される（2026-07-12 実走確認）
 - [x] GitHub に public 公開済み、CI（ruff + pytest）がグリーン
 - [x] README に課題設定・設計判断・将来ロードマップが書かれている（PR #5）
-- [ ] 自分が 3 日連続で実際に使う（使わなかったら理由を devlog に記録＝最初の試行錯誤ネタ）
+- [x] 自分が 3 日連続で実際に使う（2026-07-16〜18、digests/ に実行記録あり）
 
 ### 実装前の準備（Phase1 セッション冒頭でやること）
 1. OpenAI Platform でプリペイド $5 チャージ + オートリチャージ OFF + Hard limit $3 + aidig 専用 API キー発行
